@@ -29,7 +29,10 @@ public enum ErrorCode {
     INVALID_MBTI_CODE(HttpStatus.BAD_REQUEST, "T002", "유효하지 않은 MBTI 코드입니다"),
 
     // Statistics
-    STATISTICS_NOT_FOUND(HttpStatus.NOT_FOUND, "S001", "통계 정보를 찾을 수 없습니다");
+    STATISTICS_NOT_FOUND(HttpStatus.NOT_FOUND, "S001", "통계 정보를 찾을 수 없습니다"),
+
+    // reCAPTCHA
+    RECAPTCHA_FAILED(HttpStatus.FORBIDDEN, "C010", "보안 인증에 실패했습니다");
 
     private final HttpStatus httpStatus;
     private final String code;

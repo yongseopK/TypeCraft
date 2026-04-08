@@ -3,4 +3,20 @@
 
 <mapper namespace="com.codeman.typecraft.question.repository.QuestionRepository">
 
+    <select id="findAllActive" resultType="Question">
+        SELECT
+               id
+             , axis
+             , direction
+             , text
+             , category
+             , display_order
+             , is_active
+             , created_at
+             , updated_at
+          FROM questions
+         WHERE is_active = TRUE
+         ORDER BY display_order ASC
+    </select>
+
 </mapper>

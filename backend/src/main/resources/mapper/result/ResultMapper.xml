@@ -3,4 +3,38 @@
 
 <mapper namespace="com.codeman.typecraft.result.repository.ResultRepository">
 
+    <insert id="save" parameterType="Result">
+        INSERT INTO test_results (
+            mbti_type, e_score, i_score, s_score, n_score,
+            t_score, f_score, j_score, p_score, share_token, created_at
+        ) VALUES (
+            #{mbtiType}, #{eScore}, #{iScore}, #{sScore}, #{nScore},
+            #{tScore}, #{fScore}, #{jScore}, #{pScore}, #{shareToken}, #{createdAt}
+        )
+    </insert>
+
+    <select id="findByShareToken" parameterType="String" resultType="Result">
+        SELECT
+               id
+             , mbti_type
+             , e_score
+             , i_score
+             , s_score
+             , n_score
+             , t_score
+             , f_score
+             , j_score
+             , p_score
+             , share_token
+             , created_at
+          FROM test_results
+         WHERE share_token = #{shareToken}
+    </select>
+
+    <select id="existsByShareToken" parameterType="String" resultType="boolean">
+        SELECT COUNT(1) > 0
+          FROM test_results
+         WHERE share_token = #{shareToken}
+    </select>
+
 </mapper>

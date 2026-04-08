@@ -3,4 +3,27 @@
 
 <mapper namespace="com.codeman.typecraft.type.repository.TypeRepository">
 
+    <select id="findByMbtiCode" parameterType="String" resultType="Type">
+        SELECT
+               mbti_code
+             , title
+             , description
+             , characteristics
+             , coding_style
+             , suitable_roles
+             , tech_stack
+             , compatibility
+             , image_url
+             , created_at
+             , updated_at
+          FROM mbti_types
+         WHERE mbti_code = #{mbtiCode}
+    </select>
+
+    <select id="existsByMbtiCode" parameterType="String" resultType="boolean">
+        SELECT COUNT(1) > 0
+          FROM mbti_types
+         WHERE mbti_code = #{mbtiCode}
+    </select>
+
 </mapper>

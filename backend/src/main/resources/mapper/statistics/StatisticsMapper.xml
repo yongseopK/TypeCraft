@@ -3,4 +3,38 @@
 
 <mapper namespace="com.codeman.typecraft.statistics.repository.StatisticsRepository">
 
+    <select id="findAll" resultType="Statistics">
+        SELECT
+               mbti_type
+             , count
+             , updated_at
+          FROM mbti_statistics
+         ORDER BY count DESC
+    </select>
+
+    <update id="incrementCount">
+        UPDATE mbti_statistics
+           SET count      = count + 1
+             , updated_at = #{updatedAt}
+         WHERE mbti_type = #{mbtiType}
+    </update>
+
+    <!--
+        test_results 테이블에서 각 축별 절댓값 평균 비율을 계산합니다.
+        점수가 음수일 수 있으므로 ABS()로 절댓값을 취한 뒤 비율을 구합니다.
+        데이터가 없을 경우 0.0을 반환합니다.
+    -->
+    <select id="findAxisAverages" resultType="java.util.HashMap">
+        SELECT
+            COALESCE(ROUND(SUM(ABS(e_score)) * 100.0 / NULLIF(SUM(ABS(e_score)) + SUM(ABS(i_score)), 0), 1), 50.0) AS eAvg,
+            COALESCE(ROUND(SUM(ABS(i_score)) * 100.0 / NULLIF(SUM(ABS(e_score)) + SUM(ABS(i_score)), 0), 1), 50.0) AS iAvg,
+            COALESCE(ROUND(SUM(ABS(s_score)) * 100.0 / NULLIF(SUM(ABS(s_score)) + SUM(ABS(n_score)), 0), 1), 50.0) AS sAvg,
+            COALESCE(ROUND(SUM(ABS(n_score)) * 100.0 / NULLIF(SUM(ABS(s_score)) + SUM(ABS(n_score)), 0), 1), 50.0) AS nAvg,
+            COALESCE(ROUND(SUM(ABS(t_score)) * 100.0 / NULLIF(SUM(ABS(t_score)) + SUM(ABS(f_score)), 0), 1), 50.0) AS tAvg,
+            COALESCE(ROUND(SUM(ABS(f_score)) * 100.0 / NULLIF(SUM(ABS(t_score)) + SUM(ABS(f_score)), 0), 1), 50.0) AS fAvg,
+            COALESCE(ROUND(SUM(ABS(j_score)) * 100.0 / NULLIF(SUM(ABS(j_score)) + SUM(ABS(p_score)), 0), 1), 50.0) AS jAvg,
+            COALESCE(ROUND(SUM(ABS(p_score)) * 100.0 / NULLIF(SUM(ABS(j_score)) + SUM(ABS(p_score)), 0), 1), 50.0) AS pAvg
+          FROM test_results
+    </select>
+
 </mapper>

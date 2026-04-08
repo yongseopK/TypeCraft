@@ -1,78 +1,94 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import MobileContainer from '@/components/layout/MobileContainer';
+import Button, { BottomButtonArea } from '@/components/ui/Button';
+import { api } from '@/lib/api';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const FEATURES = [
+  { icon: '💻', title: '실전 개발 시나리오', desc: '실제 업무에서 마주치는 상황 기반 질문' },
+  { icon: '🎯', title: '16가지 개발자 유형', desc: 'INTJ 아키텍트, ENFP 전도사 등' },
+  { icon: '🔗', title: '즉시 공유 가능', desc: '카카오톡, SNS로 친구와 비교' },
+];
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+export default function Landing() {
+  const router = useRouter();
+  const { data: stats } = useSWR('statistics', () => api.getStatistics(), {
+    revalidateOnFocus: false,
+    dedupingInterval: 30000,
+  });
 
-export default function Home() {
+  const totalCount = stats?.totalCount ?? 0;
+  const topType = stats?.topThree?.[0] ?? null;
+
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black`}
-    >
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the index.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      <Head>
+        <title>Developer MBTI - 나는 어떤 개발자일까?</title>
+      </Head>
+      <MobileContainer>
+        {/* 상단 여백 */}
+        <div className="flex-1 flex flex-col px-5 pt-16 pb-28 overflow-y-auto">
+
+          {/* 헤더 뱃지 */}
+          <div className="mb-8">
+            <span className="inline-block px-3 py-1.5 bg-[#EFF6FF] text-[#3182F6] text-xs font-semibold rounded-full">
+              Developer MBTI
+            </span>
+          </div>
+
+          {/* 메인 카피 */}
+          <div className="mb-10">
+            <h1 className="text-[32px] font-bold leading-tight text-[#191F28] mb-3">
+              나는 어떤<br />개발자일까?
+            </h1>
+            <p className="text-[16px] text-[#8B95A1] leading-relaxed">
+              28개의 질문으로 알아보는<br />나의 개발자 성향
+            </p>
+          </div>
+
+          {/* 참여 통계 */}
+          {totalCount > 0 && (
+            <div className="mb-10 px-4 py-3 bg-[#F2F4F6] rounded-2xl flex items-center gap-3">
+              <span className="text-xl">🔥</span>
+              <div>
+                <p className="text-[13px] font-semibold text-[#191F28]">
+                  지금까지 <span className="text-[#3182F6]">{totalCount.toLocaleString()}명</span>이 참여했어요
+                </p>
+                {topType && (
+                  <p className="text-[12px] text-[#8B95A1] mt-0.5">
+                    가장 많은 유형은 <span className="font-medium text-[#6B7684]">{topType}</span>입니다
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 특징 카드 */}
+          <div className="flex flex-col gap-3">
+            {FEATURES.map((f) => (
+              <div key={f.title} className="flex items-center gap-4 px-4 py-4 bg-[#F9FAFB] rounded-2xl">
+                <span className="text-2xl flex-shrink-0">{f.icon}</span>
+                <div>
+                  <p className="text-[14px] font-semibold text-[#191F28]">{f.title}</p>
+                  <p className="text-[13px] text-[#8B95A1] mt-0.5">{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 하단 CTA 버튼 */}
+        <BottomButtonArea>
+          <Button onClick={() => router.push('/quiz')}>
+            무료로 검사 시작하기
+          </Button>
+          <p className="text-center text-[12px] text-[#B0B8C1] mt-3">
+            약 5분 소요 · 개인정보 수집 없음
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs/pages/getting-started?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        </BottomButtonArea>
+      </MobileContainer>
+    </>
   );
 }
