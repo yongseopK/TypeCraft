@@ -44,10 +44,11 @@ function ScoreGauge({ axis, scores }) {
         </div>
       </div>
       <div className="relative h-3 bg-[#F2F4F6] rounded-full overflow-hidden">
+        {/* width 대신 scaleX 사용: width는 layout reflow 유발, scaleX는 GPU transform만 사용 */}
         <motion.div
-          className="absolute left-0 top-0 h-full bg-[#3182F6] rounded-full"
-          initial={{ width: '50%' }}
-          animate={{ width: `${a}%` }}
+          className="absolute left-0 top-0 h-full w-full bg-[#3182F6] rounded-full origin-left"
+          initial={{ scaleX: 0.5 }}
+          animate={{ scaleX: a / 100 }}
           transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
         />
       </div>
@@ -126,7 +127,7 @@ export default function ResultPage({ result, error }) {
       </Head>
 
       <MobileContainer>
-        <div className="flex-1 px-5 pt-8 pb-28 overflow-y-auto">
+        <div className="flex-1 px-5 pt-8 pb-6 overflow-y-auto">
 
           {/* MBTI 타입 헤더 */}
           <motion.div
@@ -227,21 +228,21 @@ export default function ResultPage({ result, error }) {
             <div className="grid grid-cols-3 gap-3 mb-4">
               <button
                 onClick={handleTwitter}
-                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-all"
+                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
               >
                 <span className="text-xl">𝕏</span>
                 <span className="text-[12px] text-[#6B7684]">트위터</span>
               </button>
               <button
                 onClick={handleFacebook}
-                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-all"
+                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
               >
                 <span className="text-xl">📘</span>
                 <span className="text-[12px] text-[#6B7684]">페이스북</span>
               </button>
               <button
                 onClick={handleCopy}
-                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-all"
+                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
               >
                 <span className="text-xl">{copied ? '✅' : '🔗'}</span>
                 <span className="text-[12px] text-[#6B7684]">{copied ? '복사됨!' : 'URL 복사'}</span>
@@ -250,22 +251,20 @@ export default function ResultPage({ result, error }) {
           </motion.div>
         </div>
 
-        {/* 하단 액션 버튼 */}
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center z-40">
-          <div className="w-full max-w-[430px] bg-white border-t border-[#E5E8EB] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex gap-3">
-            <button
-              onClick={() => router.push('/statistics')}
-              className="flex-1 h-14 rounded-2xl bg-[#F2F4F6] text-[#6B7684] font-semibold text-[14px] active:scale-[0.98] transition-all"
-            >
-              전체 통계 보기
-            </button>
-            <button
-              onClick={() => router.push('/')}
-              className="flex-1 h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[14px] active:scale-[0.98] transition-all"
-            >
-              다시 검사하기
-            </button>
-          </div>
+        {/* 하단 액션 버튼 — fixed 대신 flex child */}
+        <div className="bg-white border-t border-[#E5E8EB] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex gap-3">
+          <button
+            onClick={() => router.push('/statistics')}
+            className="flex-1 h-14 rounded-2xl bg-[#F2F4F6] text-[#6B7684] font-semibold text-[14px] active:scale-[0.98] transition-transform"
+          >
+            전체 통계 보기
+          </button>
+          <button
+            onClick={() => router.push('/')}
+            className="flex-1 h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[14px] active:scale-[0.98] transition-transform"
+          >
+            다시 검사하기
+          </button>
         </div>
       </MobileContainer>
     </>

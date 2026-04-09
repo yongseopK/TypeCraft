@@ -18,7 +18,7 @@ function AxisBar({ label, pct }) {
       <span className="text-[13px] font-medium text-[#6B7684] w-12 flex-shrink-0">{label}</span>
       <div className="flex-1 h-2.5 bg-[#F2F4F6] rounded-full overflow-hidden">
         <div
-          className="h-full bg-[#3182F6] rounded-full transition-all duration-700"
+          className="h-full bg-[#3182F6] rounded-full transition-[width] duration-700"
           style={{ width: `${pct}%` }}
         />
       </div>

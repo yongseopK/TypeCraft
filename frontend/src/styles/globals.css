@@ -31,6 +31,11 @@
   box-sizing: border-box;
 }
 
+/* 모바일 탭 300ms 지연 제거 */
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
 html, body {
   background-color: var(--gray-50);
   color: var(--gray-900);

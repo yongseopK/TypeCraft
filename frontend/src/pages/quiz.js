@@ -179,7 +179,7 @@ export default function Quiz() {
         <ProgressBar current={currentIndex + 1} total={questions.length} />
 
         {/* 질문 영역 */}
-        <div className="flex-1 flex flex-col px-5 pt-8 pb-28 overflow-y-auto">
+        <div className="flex-1 flex flex-col px-5 pt-8 overflow-y-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
@@ -188,7 +188,6 @@ export default function Quiz() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-              style={{ willChange: 'opacity, transform' }}
             >
               {/* 카테고리 */}
               <span className="text-[12px] font-medium text-[#8B95A1] mb-3 block">
@@ -209,7 +208,7 @@ export default function Quiz() {
                       key={c.score}
                       onClick={() => selectAnswer(c.score)}
                       className={`
-                        w-full px-4 py-4 rounded-2xl text-left transition-all active:scale-[0.98]
+                        w-full px-4 py-4 rounded-2xl text-left transition-[background-color,border-color,color,transform] active:scale-[0.98]
                         flex items-center gap-3 border
                         ${isSelected
                           ? 'bg-[#3182F6] border-[#3182F6] text-white'
@@ -232,36 +231,34 @@ export default function Quiz() {
           </AnimatePresence>
         </div>
 
-        {/* 네비게이션 버튼 */}
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center z-40">
-          <div className="w-full max-w-[430px] bg-white border-t border-[#E5E8EB] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-            {isLast ? (
+        {/* 네비게이션 버튼 — fixed 대신 flex child로: 일부 Android에서 fixed가 스크롤 중 깜빡임 유발 */}
+        <div className="bg-white border-t border-[#E5E8EB] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+          {isLast ? (
+            <button
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+              className="w-full h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[17px] disabled:opacity-40 active:scale-[0.98] transition-transform"
+            >
+              결과 보기
+            </button>
+          ) : (
+            <div className="flex gap-3">
               <button
-                onClick={handleSubmit}
-                disabled={!canSubmit}
-                className="w-full h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[17px] disabled:opacity-40 active:scale-[0.98] transition-all"
+                onClick={goPrev}
+                disabled={currentIndex === 0}
+                className="flex-1 h-14 rounded-2xl bg-[#F2F4F6] text-[#6B7684] font-semibold text-[15px] disabled:opacity-30 active:scale-[0.98] transition-transform"
               >
-                결과 보기
+                ← 이전
               </button>
-            ) : (
-              <div className="flex gap-3">
-                <button
-                  onClick={goPrev}
-                  disabled={currentIndex === 0}
-                  className="flex-1 h-14 rounded-2xl bg-[#F2F4F6] text-[#6B7684] font-semibold text-[15px] disabled:opacity-30 active:scale-[0.98] transition-all"
-                >
-                  ← 이전
-                </button>
-                <button
-                  onClick={goNext}
-                  disabled={selectedScore === undefined}
-                  className="flex-1 h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[15px] disabled:opacity-40 active:scale-[0.98] transition-all"
-                >
-                  다음 →
-                </button>
-              </div>
-            )}
-          </div>
+              <button
+                onClick={goNext}
+                disabled={selectedScore === undefined}
+                className="flex-1 h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[15px] disabled:opacity-40 active:scale-[0.98] transition-transform"
+              >
+                다음 →
+              </button>
+            </div>
+          )}
         </div>
       </MobileContainer>
     </>

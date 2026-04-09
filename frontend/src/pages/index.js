@@ -29,7 +29,7 @@ export default function Landing() {
       </Head>
       <MobileContainer>
         {/* 상단 여백 */}
-        <div className="flex-1 flex flex-col px-5 pt-16 pb-28 overflow-y-auto">
+        <div className="flex-1 flex flex-col px-5 pt-16 pb-6 overflow-y-auto">
 
           {/* 헤더 뱃지 */}
           <div className="mb-8">

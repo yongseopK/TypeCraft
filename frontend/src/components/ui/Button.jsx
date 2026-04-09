@@ -1,6 +1,6 @@
 /** Toss 스타일 버튼 */
 export default function Button({ children, onClick, disabled, variant = 'primary', className = '' }) {
-  const base = 'w-full h-14 rounded-2xl font-semibold text-[17px] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed';
+  const base = 'w-full h-14 rounded-2xl font-semibold text-[17px] transition-transform active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed';
 
   const variants = {
     primary: 'bg-[#3182F6] text-white',
@@ -19,13 +19,11 @@ export default function Button({ children, onClick, disabled, variant = 'primary
   );
 }
 
-/** 하단 고정 버튼 래퍼 */
+/** 하단 버튼 래퍼 — fixed 대신 flex child (index.js의 MobileContainer가 h-[100svh]이므로 레이아웃으로 처리) */
 export function BottomButtonArea({ children }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 flex justify-center bg-white border-t border-[#E5E8EB] z-50">
-      <div className="w-full max-w-[430px] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-        {children}
-      </div>
+    <div className="bg-white border-t border-[#E5E8EB] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+      {children}
     </div>
   );
 }
