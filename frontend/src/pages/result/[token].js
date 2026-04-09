@@ -198,22 +198,23 @@ function OwnerView({ result }) {
           </motion.div>
         )}
 
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
-          <p className="text-[13px] font-semibold text-[#8B95A1] mb-3 text-center">친구에게 공유하기</p>
-          <div className="flex gap-3">
+        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
+          className="bg-[#F9FAFB] rounded-2xl p-4">
+          <p className="text-[13px] font-semibold text-[#8B95A1] mb-3">🔗 친구에게 공유하기</p>
+          <div className="flex gap-2">
             <button
               onClick={handleKakaoShare}
-              className="flex-1 flex items-center justify-center gap-2 py-4 bg-[#FEE500] rounded-2xl active:scale-[0.97] transition-transform"
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-[#FEE500] rounded-xl active:scale-[0.97] transition-transform"
             >
-              <span className="text-lg">💬</span>
-              <span className="text-[15px] font-semibold text-[#191919]">카카오톡</span>
+              <img src="/kakao-logo.svg" alt="kakao" className="w-5 h-5" />
+              <span className="text-[14px] font-bold text-[#191919]">카카오톡</span>
             </button>
             <button
               onClick={handleCopy}
-              className="flex-1 flex items-center justify-center gap-2 py-4 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-white border border-[#E5E8EB] rounded-xl active:scale-[0.97] transition-transform"
             >
-              <span className="text-lg">{copied ? '✅' : '🔗'}</span>
-              <span className="text-[15px] font-semibold text-[#4E5968]">{copied ? '복사됨!' : '링크 복사'}</span>
+              <span className="text-[16px]">{copied ? '✅' : '🔗'}</span>
+              <span className="text-[14px] font-bold text-[#4E5968]">{copied ? '복사됨!' : '링크 복사'}</span>
             </button>
           </div>
         </motion.div>
