@@ -24,6 +24,12 @@ export default function Loading() {
   const called = useRef(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
+  // 로딩 페이지에서만 reCAPTCHA 배지 표시
+  useEffect(() => {
+    document.body.classList.add('show-recaptcha');
+    return () => document.body.classList.remove('show-recaptcha');
+  }, []);
+
   // 메시지 순환
   useEffect(() => {
     const interval = setInterval(() => {
@@ -96,6 +102,13 @@ export default function Loading() {
               </motion.p>
             </AnimatePresence>
           </div>
+
+          {/* Google 정책 문구 (배지 숨길 때 필수 표시) */}
+          {!error && (
+            <p className="text-[11px] text-[#B0B8C1] text-center">
+              Protected by reCAPTCHA
+            </p>
+          )}
 
           {/* 에러 */}
           {error && (

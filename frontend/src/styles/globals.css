@@ -49,3 +49,7 @@ html, body {
 ::-webkit-scrollbar { display: none; }
 * { scrollbar-width: none; }
 
+/* reCAPTCHA 배지 전역 숨김 — 로딩 페이지에서만 show-recaptcha 클래스로 노출 */
+.grecaptcha-badge { visibility: hidden !important; }
+body.show-recaptcha .grecaptcha-badge { visibility: visible !important; }
+
