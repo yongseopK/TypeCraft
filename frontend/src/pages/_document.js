@@ -18,12 +18,6 @@ export default function Document() {
         <link rel="shortcut icon" href="/favicon/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
-        <script
-          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
-          integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
-          crossOrigin="anonymous"
-          async
-        />
       </Head>
       <body>
         <Main />
