@@ -32,7 +32,3 @@ app:
     secret-key: ${RECAPTCHA_SECRET_KEY}
     verify-url: https://www.google.com/recaptcha/api/siteverify
 
-logging:
-  level:
-    com.codeman: INFO
-    org.flywaydb: DEBUG
