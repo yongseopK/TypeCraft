@@ -59,6 +59,7 @@ export default function Loading() {
         const recaptchaToken = await executeRecaptcha('submit_answers');
         const { shareToken } = await api.submitAnswers(answers, recaptchaToken);
         clearProgress();
+        sessionStorage.setItem('myResultToken', shareToken);
         router.replace(`/result/${shareToken}`);
       } catch (err) {
         setError(err.message || '결과 제출에 실패했습니다.');
