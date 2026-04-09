@@ -13,7 +13,11 @@ export default function Document() {
         <meta name="description" content="28개의 질문으로 알아보는 나의 개발자 성향 - Developer MBTI" />
         <meta property="og:site_name" content="Developer MBTI" />
         <meta property="og:type" content="website" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+        <link rel="manifest" href="/favicon/site.webmanifest" />
       </Head>
       <body>
         <Main />
