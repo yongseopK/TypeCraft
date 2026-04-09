@@ -108,15 +108,6 @@ export default function ResultPage({ result, error }) {
     } catch {}
   };
 
-  const handleTwitter = () => {
-    const text = `나는 ${mbtiType} ${typeInfo.title}입니다! Developer MBTI로 개발자 유형을 알아보세요`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
-  };
-
-  const handleFacebook = () => {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
-  };
-
   return (
     <>
       <Head>
@@ -208,7 +199,7 @@ export default function ResultPage({ result, error }) {
               className="text-center py-4 px-4 bg-[#EFF6FF] rounded-2xl mb-6"
             >
               <p className="text-[15px] font-bold text-[#3182F6]">
-                당신과 같은 유형은 전체의
+                {mbtiType} 유형은 전체의
                 <span className="text-[20px] mx-1">{statistics.percentage}%</span>
                 입니다
               </p>
@@ -223,31 +214,16 @@ export default function ResultPage({ result, error }) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
+            className="mb-4"
           >
             <p className="text-[13px] font-semibold text-[#8B95A1] mb-3 text-center">친구에게 공유하기</p>
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              <button
-                onClick={handleTwitter}
-                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
-              >
-                <span className="text-xl">𝕏</span>
-                <span className="text-[12px] text-[#6B7684]">트위터</span>
-              </button>
-              <button
-                onClick={handleFacebook}
-                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
-              >
-                <span className="text-xl">📘</span>
-                <span className="text-[12px] text-[#6B7684]">페이스북</span>
-              </button>
-              <button
-                onClick={handleCopy}
-                className="flex flex-col items-center gap-1.5 py-3 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
-              >
-                <span className="text-xl">{copied ? '✅' : '🔗'}</span>
-                <span className="text-[12px] text-[#6B7684]">{copied ? '복사됨!' : 'URL 복사'}</span>
-              </button>
-            </div>
+            <button
+              onClick={handleCopy}
+              className="w-full flex items-center justify-center gap-2 py-4 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
+            >
+              <span className="text-lg">{copied ? '✅' : '🔗'}</span>
+              <span className="text-[15px] font-semibold text-[#4E5968]">{copied ? '링크 복사됨!' : '링크 복사하기'}</span>
+            </button>
           </motion.div>
         </div>
 
@@ -263,7 +239,7 @@ export default function ResultPage({ result, error }) {
             onClick={() => router.push('/')}
             className="flex-1 h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[14px] active:scale-[0.98] transition-transform"
           >
-            다시 검사하기
+            나도 검사하기
           </button>
         </div>
       </MobileContainer>
