@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import MobileContainer from '@/components/layout/MobileContainer';
+import { BottomButtonArea } from '@/components/ui/Button';
 import ProgressBar from '@/components/ui/ProgressBar';
 import { api } from '@/lib/api';
 import { clearProgress, hasProgress, loadProgress, saveProgress } from '@/lib/quizStorage';
@@ -52,23 +53,7 @@ export default function Quiz() {
       });
   }, [router]);
 
-  // 키보드 단축키
-  useEffect(() => {
-    const handleKey = (e) => {
-      const q = questions[currentIndex];
-      if (!q) return;
-      const numKey = parseInt(e.key);
-      if (numKey >= 1 && numKey <= 5) {
-        selectAnswer(CHOICES[numKey - 1].score);
-      }
-      if (e.key === 'ArrowRight' && answers[q.id] !== undefined) goNext();
-      if (e.key === 'ArrowLeft' && currentIndex > 0) goPrev();
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [currentIndex, questions, answers]); // eslint-disable-line
-
-  // currentIndex가 실제로 바뀐 뒤 락 해제 — 타이머 기반은 React 상태 업데이트 타이밍과 어긋나 씹힘 발생
+  // currentIndex가 실제로 바뀐 뒤 락 해제
   useEffect(() => {
     isTransitioning.current = false;
   }, [currentIndex]);
@@ -78,27 +63,46 @@ export default function Quiz() {
     const q = questions[currentIndex];
     if (!q) return;
 
-    const newAnswers = { ...answers, [q.id]: score };
-    setAnswers(newAnswers);
-    saveProgress(newAnswers, currentIndex);
+    // 함수형 업데이트로 answers 클로저 의존성 제거
+    setAnswers(prev => {
+      const newAnswers = { ...prev, [q.id]: score };
+      saveProgress(newAnswers, currentIndex);
+      return newAnswers;
+    });
 
     if (currentIndex < questions.length - 1) {
       isTransitioning.current = true;
       setCurrentIndex((i) => i + 1);
     }
-  }, [questions, currentIndex, answers]);
+  }, [questions, currentIndex]);
 
   const goNext = useCallback(() => {
+    if (isTransitioning.current) return;
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((i) => i + 1);
     }
   }, [currentIndex, questions.length]);
 
   const goPrev = useCallback(() => {
+    if (isTransitioning.current) return;
     if (currentIndex > 0) {
       setCurrentIndex((i) => i - 1);
     }
   }, [currentIndex]);
+
+  // 키보드 단축키 — selectAnswer가 [questions, currentIndex]만 의존하므로 stale closure 없음
+  useEffect(() => {
+    const handleKey = (e) => {
+      const q = questions[currentIndex];
+      if (!q) return;
+      const numKey = parseInt(e.key);
+      if (numKey >= 1 && numKey <= 5) selectAnswer(CHOICES[numKey - 1].score);
+      if (e.key === 'ArrowRight' && answers[q.id] !== undefined) goNext();
+      if (e.key === 'ArrowLeft' && currentIndex > 0) goPrev();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [currentIndex, questions, answers, selectAnswer, goNext, goPrev]);
 
   const handleSubmit = async () => {
     const formatted = Object.entries(answers).map(([questionId, score]) => ({
@@ -232,8 +236,7 @@ export default function Quiz() {
           </AnimatePresence>
         </div>
 
-        {/* 네비게이션 버튼 — fixed 대신 flex child로: 일부 Android에서 fixed가 스크롤 중 깜빡임 유발 */}
-        <div className="bg-white border-t border-[#E5E8EB] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <BottomButtonArea>
           {isLast ? (
             <button
               onClick={handleSubmit}
@@ -260,7 +263,7 @@ export default function Quiz() {
               </button>
             </div>
           )}
-        </div>
+        </BottomButtonArea>
       </MobileContainer>
     </>
   );

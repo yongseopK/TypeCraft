@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import MobileContainer from '@/components/layout/MobileContainer';
+import { BottomButtonArea } from '@/components/ui/Button';
 import { serverPost } from '@/lib/api';
 
 function calcPercent(a, b) {
@@ -73,7 +74,37 @@ function InfoCard({ emoji, title, items }) {
   );
 }
 
-/** 검사를 직접 진행한 사람이 보는 화면 */
+/** owner/shared 공통 — MBTI 타입 헤더 */
+function MbtiTypeHeader({ mbtiType, typeInfo, variant }) {
+  const shared = variant === 'shared';
+  return (
+    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-center mb-8">
+      <div className={`inline-block ${shared ? 'px-6 py-3' : 'px-4 py-2'} bg-[#EFF6FF] rounded-full mb-4`}>
+        <span className={`${shared ? 'text-[48px]' : 'text-[36px]'} font-black text-[#3182F6] tracking-wider`}>
+          {mbtiType}
+        </span>
+      </div>
+      <h1 className={`${shared ? 'text-[22px]' : 'text-[24px]'} font-bold text-[#191F28] mb-2`}>
+        {typeInfo.title}
+      </h1>
+      <p className="text-[14px] text-[#8B95A1] leading-relaxed">{typeInfo.description}</p>
+    </motion.div>
+  );
+}
+
+/** owner/shared 공통 — 성향 분포 게이지 카드 */
+function ScoreGaugeCard({ scores, label }) {
+  return (
+    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}
+      className="bg-white border border-[#E5E8EB] rounded-2xl p-4 mb-4">
+      <p className="text-[13px] font-semibold text-[#8B95A1] mb-2">📊 {label}</p>
+      {AXIS_LABELS.map((axis) => (
+        <ScoreGauge key={axis.left} axis={axis} scores={scores} />
+      ))}
+    </motion.div>
+  );
+}
+
 function OwnerView({ result }) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
@@ -91,22 +122,8 @@ function OwnerView({ result }) {
   return (
     <>
       <div className="flex-1 px-5 pt-8 pb-6 overflow-y-auto">
-
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-center mb-8">
-          <div className="inline-block px-4 py-2 bg-[#EFF6FF] rounded-full mb-4">
-            <span className="text-[36px] font-black text-[#3182F6] tracking-wider">{mbtiType}</span>
-          </div>
-          <h1 className="text-[24px] font-bold text-[#191F28] mb-2">{typeInfo.title}</h1>
-          <p className="text-[14px] text-[#8B95A1] leading-relaxed">{typeInfo.description}</p>
-        </motion.div>
-
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}
-          className="bg-white border border-[#E5E8EB] rounded-2xl p-4 mb-4">
-          <p className="text-[13px] font-semibold text-[#8B95A1] mb-2">📊 성향 분석</p>
-          {AXIS_LABELS.map((axis) => (
-            <ScoreGauge key={axis.left} axis={axis} scores={scores} />
-          ))}
-        </motion.div>
+        <MbtiTypeHeader mbtiType={mbtiType} typeInfo={typeInfo} variant="owner" />
+        <ScoreGaugeCard scores={scores} label="성향 분석" />
 
         {typeInfo.characteristics?.length > 0 && (
           <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
@@ -168,25 +185,26 @@ function OwnerView({ result }) {
         </motion.div>
       </div>
 
-      <div className="bg-white border-t border-[#E5E8EB] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex gap-3">
-        <button
-          onClick={() => router.push('/statistics')}
-          className="flex-1 h-14 rounded-2xl bg-[#F2F4F6] text-[#6B7684] font-semibold text-[14px] active:scale-[0.98] transition-transform"
-        >
-          전체 통계 보기
-        </button>
-        <button
-          onClick={() => router.push('/')}
-          className="flex-1 h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[14px] active:scale-[0.98] transition-transform"
-        >
-          다시 검사하기
-        </button>
-      </div>
+      <BottomButtonArea>
+        <div className="flex gap-3">
+          <button
+            onClick={() => router.push('/statistics')}
+            className="flex-1 h-14 rounded-2xl bg-[#F2F4F6] text-[#6B7684] font-semibold text-[14px] active:scale-[0.98] transition-transform"
+          >
+            전체 통계 보기
+          </button>
+          <button
+            onClick={() => router.push('/')}
+            className="flex-1 h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[14px] active:scale-[0.98] transition-transform"
+          >
+            다시 검사하기
+          </button>
+        </div>
+      </BottomButtonArea>
     </>
   );
 }
 
-/** 공유 링크로 접속한 뷰어가 보는 화면 */
 function SharedView({ result }) {
   const router = useRouter();
   const { mbtiType, scores, typeInfo, statistics } = result;
@@ -194,29 +212,14 @@ function SharedView({ result }) {
   return (
     <>
       <div className="flex-1 px-5 pt-8 pb-6 overflow-y-auto">
-
-        {/* 공유된 결과임을 나타내는 뱃지 */}
         <div className="flex justify-center mb-6">
           <span className="px-3 py-1.5 bg-[#F2F4F6] text-[#8B95A1] text-[12px] font-medium rounded-full">
             공유된 결과
           </span>
         </div>
 
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-center mb-8">
-          <div className="inline-block px-6 py-3 bg-[#EFF6FF] rounded-full mb-4">
-            <span className="text-[48px] font-black text-[#3182F6] tracking-wider">{mbtiType}</span>
-          </div>
-          <h1 className="text-[22px] font-bold text-[#191F28] mb-2">{typeInfo.title}</h1>
-          <p className="text-[14px] text-[#8B95A1] leading-relaxed">{typeInfo.description}</p>
-        </motion.div>
-
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}
-          className="bg-white border border-[#E5E8EB] rounded-2xl p-4 mb-4">
-          <p className="text-[13px] font-semibold text-[#8B95A1] mb-2">📊 성향 분포</p>
-          {AXIS_LABELS.map((axis) => (
-            <ScoreGauge key={axis.left} axis={axis} scores={scores} />
-          ))}
-        </motion.div>
+        <MbtiTypeHeader mbtiType={mbtiType} typeInfo={typeInfo} variant="shared" />
+        <ScoreGaugeCard scores={scores} label="성향 분포" />
 
         {statistics && (
           <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
@@ -238,25 +241,24 @@ function SharedView({ result }) {
         </motion.div>
       </div>
 
-      <div className="bg-white border-t border-[#E5E8EB] px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+      <BottomButtonArea>
         <button
           onClick={() => router.push('/')}
           className="w-full h-14 rounded-2xl bg-[#3182F6] text-white font-semibold text-[17px] active:scale-[0.98] transition-transform"
         >
           나도 내 유형 알아보기
         </button>
-      </div>
+      </BottomButtonArea>
     </>
   );
 }
 
 export default function ResultPage({ result, error, token }) {
   const router = useRouter();
-  const [isOwner, setIsOwner] = useState(null); // null = 판별 전
+  const [isOwner, setIsOwner] = useState(null);
 
   useEffect(() => {
-    const myToken = sessionStorage.getItem('myResultToken');
-    setIsOwner(myToken === token);
+    setIsOwner(sessionStorage.getItem('myResultToken') === token);
   }, [token]);
 
   if (error) {
@@ -287,9 +289,7 @@ export default function ResultPage({ result, error, token }) {
         <meta property="og:description" content={typeInfo.description} />
         <meta property="og:type" content="website" />
       </Head>
-
       <MobileContainer>
-        {/* sessionStorage 판별 전엔 아무것도 렌더하지 않아 레이아웃 깜빡임 방지 */}
         {isOwner === null ? null : isOwner
           ? <OwnerView result={result} />
           : <SharedView result={result} />

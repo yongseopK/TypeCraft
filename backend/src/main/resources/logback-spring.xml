@@ -45,7 +45,6 @@
         </appender>
 
         <logger name="com.codeman" level="DEBUG"/>
-        <logger name="org.flywaydb"  level="INFO"/>
 
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
@@ -59,12 +58,14 @@
     <springProfile name="!local">
 
         <logger name="com.codeman" level="INFO"/>
-        <logger name="org.flywaydb"  level="INFO"/>
 
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
 
     </springProfile>
+
+    <!-- ── 공통 로거 ── -->
+    <logger name="org.flywaydb" level="INFO"/>
 
 </configuration>
