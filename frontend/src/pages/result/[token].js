@@ -119,6 +119,31 @@ function OwnerView({ result }) {
     } catch {}
   };
 
+  const handleKakaoShare = () => {
+    window.Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: `나는 ${mbtiType} 개발자 유형이에요`,
+        description: typeInfo.description,
+        imageUrl: 'https://typecraft.kr/og-image.png',
+        link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+      },
+      buttons: [
+        {
+          title: '결과 보기',
+          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+        },
+        {
+          title: '나도 해보기',
+          link: {
+            mobileWebUrl: 'https://typecraft.kr',
+            webUrl: 'https://typecraft.kr',
+          },
+        },
+      ],
+    });
+  };
+
   return (
     <>
       <div className="flex-1 px-5 pt-8 pb-6 overflow-y-auto">
@@ -175,13 +200,22 @@ function OwnerView({ result }) {
 
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
           <p className="text-[13px] font-semibold text-[#8B95A1] mb-3 text-center">친구에게 공유하기</p>
-          <button
-            onClick={handleCopy}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
-          >
-            <span className="text-lg">{copied ? '✅' : '🔗'}</span>
-            <span className="text-[15px] font-semibold text-[#4E5968]">{copied ? '링크 복사됨!' : '링크 복사하기'}</span>
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={handleKakaoShare}
+              className="flex-1 flex items-center justify-center gap-2 py-4 bg-[#FEE500] rounded-2xl active:scale-[0.97] transition-transform"
+            >
+              <span className="text-lg">💬</span>
+              <span className="text-[15px] font-semibold text-[#191919]">카카오톡</span>
+            </button>
+            <button
+              onClick={handleCopy}
+              className="flex-1 flex items-center justify-center gap-2 py-4 bg-[#F9FAFB] border border-[#E5E8EB] rounded-2xl active:scale-[0.97] transition-transform"
+            >
+              <span className="text-lg">{copied ? '✅' : '🔗'}</span>
+              <span className="text-[15px] font-semibold text-[#4E5968]">{copied ? '복사됨!' : '링크 복사'}</span>
+            </button>
+          </div>
         </motion.div>
       </div>
 
