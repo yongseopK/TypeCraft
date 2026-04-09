@@ -68,6 +68,11 @@ export default function Quiz() {
     return () => window.removeEventListener('keydown', handleKey);
   }, [currentIndex, questions, answers]); // eslint-disable-line
 
+  // currentIndex가 실제로 바뀐 뒤 락 해제 — 타이머 기반은 React 상태 업데이트 타이밍과 어긋나 씹힘 발생
+  useEffect(() => {
+    isTransitioning.current = false;
+  }, [currentIndex]);
+
   const selectAnswer = useCallback((score) => {
     if (isTransitioning.current) return;
     const q = questions[currentIndex];
@@ -77,13 +82,9 @@ export default function Quiz() {
     setAnswers(newAnswers);
     saveProgress(newAnswers, currentIndex);
 
-    // 마지막 문항이면 제출 대기 (버튼 클릭), 아니면 선택 피드백 후 즉시 이동
     if (currentIndex < questions.length - 1) {
       isTransitioning.current = true;
-      setTimeout(() => {
-        setCurrentIndex((i) => i + 1);
-        isTransitioning.current = false;
-      }, 80);
+      setCurrentIndex((i) => i + 1);
     }
   }, [questions, currentIndex, answers]);
 
