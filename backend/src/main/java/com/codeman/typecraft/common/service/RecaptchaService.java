@@ -34,7 +34,8 @@ public class RecaptchaService {
         }
 
         try {
-            String body = "secret=" + secretKey + "&response=" + token;
+            String body = "secret=" + URLEncoder.encode(secretKey, StandardCharsets.UTF_8)
+                    + "&response=" + URLEncoder.encode(token, StandardCharsets.UTF_8);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(verifyUrl))
                     .header("Content-Type", "application/x-www-form-urlencoded")
