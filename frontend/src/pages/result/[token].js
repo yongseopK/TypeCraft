@@ -125,7 +125,7 @@ function OwnerView({ result }) {
       content: {
         title: `나는 ${mbtiType} 개발자 유형이에요`,
         description: typeInfo.description,
-        imageUrl: 'https://typecraft.kr/og-image.png',
+        imageUrl: `https://typecraft.kr/api/og?type=${mbtiType}&title=${encodeURIComponent(typeInfo.title)}`,
         link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
       },
       buttons: [
