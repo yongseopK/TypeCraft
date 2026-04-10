@@ -45,6 +45,12 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         String ip = resolveClientIp(request);
         String uri = request.getRequestURI();
 
+        // /api/**, /actuator/health 외 경로는 즉시 404
+        if (!uri.startsWith("/api/") && !uri.equals("/actuator/health")) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return false;
+        }
+
         // 제출 엔드포인트: POST /api/results (답변 제출)
         if ("POST".equals(request.getMethod()) && uri.equals("/api/results")) {
             AtomicInteger count = submitCache.get(ip, k -> new AtomicInteger(0));
@@ -53,7 +59,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
                 writeRateLimitResponse(response, "요청이 너무 많습니다. 1시간 후 다시 시도해주세요.");
                 return false;
             }
-        } else if (uri.startsWith("/api/")) {
+        } else {
             // 일반 API
             AtomicInteger count = generalCache.get(ip, k -> new AtomicInteger(0));
             if (count.incrementAndGet() > GENERAL_LIMIT) {
